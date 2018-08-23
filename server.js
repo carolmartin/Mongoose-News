@@ -12,15 +12,7 @@ var cheerio = require("cheerio");
 // Require all models
 var db = require("./models");
 
-var PORT = 3000;
-
-// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
-
-// Set mongoose to leverage built in JavaScript ES6 Promises
-// Connect to the Mongo DB
-mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI);
+var PORT = process.env.PORT || 3000;
 
 // Initialize Express
 var app = express();
@@ -34,7 +26,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use express.static to serve the public folder as a static directory
 app.use(express.static("public"));
 
+// If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
+// Set mongoose to leverage built in JavaScript ES6 Promises
+// Connect to the Mongo DB
+mongoose.Promise = Promise;
+mongoose.connect(MONGODB_URI);
 
 // Routes
 
@@ -46,7 +44,7 @@ app.get("/scrape", function(req, res) {
     var $ = cheerio.load(response.data);
 
     // Now, we grab every li item with a class article, and do the following:
-    $("li.article").each(function(i, element) {
+    $("h5.article-title").each(function(i, element) {
       // Save an empty result object
       var result = {};
 
@@ -54,9 +52,9 @@ app.get("/scrape", function(req, res) {
       result.title = $(this)
         .children("a")
         .text();
-      result.link = $(this)
+      result.link = ("http://www.allaboutarizonanews.com" + $(this)
         .children("a")
-        .attr("href");
+        .attr("href"));
 
       // Create a new Article using the `result` object built from scraping
       db.Article.create(result)

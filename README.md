@@ -1,6 +1,6 @@
 # Mongoose-News
-This will read a news feed, let users browse the news feed and add commentts on the latest news. 
+This will read a news feed, let users browse the news feed and add comments on the latest news. 
 
-Use express, express-handlebars, mongoose, bodyp-parser, cheerio and request. 
+Use express, express-handlebars, mongoose, body-parser, cheerio and request. 
  
  
